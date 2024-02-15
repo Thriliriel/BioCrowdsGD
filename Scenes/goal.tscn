@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bsgkemnopsd6t"]
+
+[ext_resource type="Texture2D" uid="uid://dhebowx3jbjpe" path="res://Images/flag.png" id="1_vvmqd"]
+[ext_resource type="Script" path="res://Scripts/goal.gd" id="1_w3v61"]
+
+[node name="Goal" type="Node3D"]
+script = ExtResource("1_w3v61")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+texture = ExtResource("1_vvmqd")

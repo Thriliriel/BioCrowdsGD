@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://c7lr23ancyr7o"]
+
+[ext_resource type="Texture2D" uid="uid://cf25e7vluhud4" path="res://Images/white1px.png" id="1_meicg"]
+[ext_resource type="Script" path="res://Scripts/cell.gd" id="1_qf3tp"]
+[ext_resource type="PackedScene" uid="uid://c8qyn7k1x8m7j" path="res://Scenes/marker.tscn" id="2_qyx6q"]
+
+[node name="Cell" type="Node3D"]
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 1, 0, 0, 0)
+script = ExtResource("1_qf3tp")
+markerScene = ExtResource("2_qyx6q")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+modulate = Color(0.0666667, 0.619608, 0.176471, 1)
+texture = ExtResource("1_meicg")
