@@ -24,18 +24,25 @@ var speedModule: float
 var speed: Vector3
 var cell: Node3D
 
+# to check if agent is stuck
+var lastDist = []
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	cell = null
+	goal = null
 	speed = Vector3.ZERO
 	m = Vector3.ZERO
 	speedModule = 0
 	denominadorW = false
 	valorDenominadorW = 0
 	goalPosition = Vector3.ZERO
+	radius = 1
+	maxSpeed = 1.2
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	#print(position)
 	pass
 	
 #clear agent´s informations
@@ -160,7 +167,7 @@ func CheckMarkersCell(checkCell):
 #find all markers near him (Voronoi Diagram)
 #call this method from Biocrowds, to make it sequential for each agent
 func FindNearMarkers():
-	#clear all agents auxins, to start again for this iteration
+	#clear all agents markers, to start again for this iteration
 	markers.clear()
 	markers = []
 
@@ -205,7 +212,13 @@ func CheckSubGoalDistance():
 	if goalPosition != goal.position:
 		var distanceSubGoal = position.distance_to(goalPosition)
 		if distanceSubGoal < radius and len(path) > 1:
-			path.pop(0)
+			path.remove_at(0)
 			goalPosition = Vector3(path[0].position.x, path[0].position.y, path[0].position.z)
 		elif distanceSubGoal < radius:
 			goalPosition = goal.position
+			
+func GetCell():
+	return cell
+	
+func SetCell(newCell):
+	cell = newCell
