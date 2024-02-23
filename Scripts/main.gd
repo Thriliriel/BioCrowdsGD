@@ -16,6 +16,13 @@ var cells = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	#get the information from the config file
+	var result = Filehandler.LoadFile("Config.json")
+	result = result["simulation"]
+	
+	#update mapSize according the config file
+	mapSize = Vector3(result["environment"]["size"][0], result["environment"]["size"][1], result["environment"]["size"][2])
+	
 	#cells holder
 	var cellsHolder = $Cells
 	
@@ -48,23 +55,35 @@ func _ready():
 	#camera position
 	$Camera.position = Vector3(mapSize.x/2, mapSize.y/2, $Camera.position.z)
 	
-	#put goals
-	var goal = goalScene.instantiate()
-	var chosenCell = cellsHolder.get_children()[cellsHolder.get_child_count()-1]
-	$Goals.add_child(goal)
-	goal.SetCell(chosenCell)
-	goal.position = chosenCell.position
+	#put goals, according the config file
+	var configGoals = result["goals"]
+	for g in configGoals:		
+		var goal = goalScene.instantiate()
+		var chosenCell = FindNearestCell(Vector3(g["position"][0], g["position"][1], g["position"][2]))
+		$Goals.add_child(goal)
+		goal.SetCell(chosenCell)
+		goal.position = chosenCell.position
 	
-	#put agents
-	var agent = agentScene.instantiate()
-	chosenCell = cellsHolder.get_children()[0]
-	$Agents.add_child(agent)
-	agent.SetCell(chosenCell)
-	agent.position = chosenCell.position
-	agent.goal = goal
-	agent.goalPosition = goal.position
-	agents.append(agent)
-	
+	#put agents, according the spawn points
+	var configAgents = result["spawnAreas"]
+	for a in configAgents:
+		#how many agents?
+		var qntAgents = int(a["agent_count"])
+		#goal list
+		var goalList = a["goal_list"]
+		#position
+		var startPos = Vector3(a["transform"]["position"][0], a["transform"]["position"][1], a["transform"]["position"][2])
+		
+		#for each agent, spawn
+		for ag in qntAgents:
+			var agent = agentScene.instantiate()
+			var chosenCell = FindNearestCell(startPos)
+			$Agents.add_child(agent)
+			agent.SetCell(chosenCell)
+			agent.position = chosenCell.position
+			agent.goal = $Goals.get_children()[goalList[0]] #ONLY ONE GOAL SO FAR!!
+			agent.goalPosition = agent.goal.position
+			agents.append(agent)	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -174,3 +193,23 @@ func _process(delta):
 		if len(agentsToKill) > 0:
 			for k in range(0, len(agentsToKill)):
 				agents.remove_at(agentsToKill[k])
+
+#find the nearest cell, given the position
+func FindNearestCell(givenPosition):
+	var chosenCell = null
+	var distance = mapSize.x + mapSize.y
+	
+	var cells = $Cells.get_children()
+	
+	for c in cells:
+		var thisDist = c.position.distance_to(givenPosition)
+		if thisDist < distance:
+			distance = thisDist
+			chosenCell = c
+			
+		#if distance is lower than the cellSize, do not need to keep looking
+		if distance < cellSize.x:
+			break
+	
+	return chosenCell
+	

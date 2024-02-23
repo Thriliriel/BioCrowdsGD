@@ -4,9 +4,10 @@
 [ext_resource type="Script" path="res://Scripts/agent.gd" id="1_q8gb1"]
 
 [node name="Agent" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
 script = ExtResource("1_q8gb1")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 1, 0, 0, 0.1)
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 1, 0, 0, 0)
 modulate = Color(0.0235294, 0.0235294, 0.0235294, 1)
 texture = ExtResource("1_4mvxa")
