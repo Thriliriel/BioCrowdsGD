@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://otd1ur2okdcp"]
+
+[ext_resource type="Texture2D" uid="uid://cf25e7vluhud4" path="res://Images/white1px.png" id="1_nqpvy"]
+[ext_resource type="Script" path="res://Scripts/obstacle.gd" id="1_xjq71"]
+
+[node name="Obstacle" type="Node3D"]
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 1, 0, 0, 0)
+script = ExtResource("1_xjq71")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+texture = ExtResource("1_nqpvy")

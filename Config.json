@@ -22,8 +22,8 @@
       {
         "transform": {
           "position": [
-            6.954546,
-            19.8232174,
+            15.0,
+            15.0,
             0.0
           ],
           "rotation": [
@@ -58,7 +58,7 @@
             1.0
           ]
         },
-        "agent_count": 3,
+        "agent_count": 1,
         "goal_list": [
           0
         ]

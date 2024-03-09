@@ -5,6 +5,7 @@ extends Node3D
 @export var cellScene: PackedScene
 @export var goalScene: PackedScene
 @export var agentScene: PackedScene
+@export var obsScene: PackedScene
 #cellSize
 var cellSize = Vector3(0, 0, 0)
 #mapSize
@@ -23,6 +24,25 @@ func _ready():
 	#update mapSize according the config file
 	mapSize = Vector3(result["environment"]["size"][0], result["environment"]["size"][1], result["environment"]["size"][2])
 	
+	#obstacles
+	#obstacles holder
+	var obsHolder = $Obstacles
+	
+	#obstacles from file
+	var obstacles = result["obstacles"]
+	
+	#for each obstacle
+	for obs in obstacles:		
+		var newObs = obsScene.instantiate()
+		
+		var transf = obs["transform"]
+		
+		newObs.position = Vector3(transf["position"][0], transf["position"][1], transf["position"][2])
+		newObs.rotation = Vector3(transf["rotation"][0], transf["rotation"][1], transf["rotation"][2])
+		newObs.scale = Vector3(transf["localScale"][0]*newObs.scale.x, transf["localScale"][1]*newObs.scale.y, transf["localScale"][2]*newObs.scale.z)
+		
+		obsHolder.add_child(newObs)
+	
 	#cells holder
 	var cellsHolder = $Cells
 	
@@ -35,6 +55,8 @@ func _ready():
 			var newCell = cellScene.instantiate()
 			newCell.position = Vector3(posX, posY, newCell.position.z)
 			#print(str(newCell.position.x) + "--" + str(newCell.position.y))
+			#set the obstacle holder
+			newCell.obsHolder = obsHolder
 			cells.append(newCell)
 			#add to the scene
 			cellsHolder.add_child(newCell)
