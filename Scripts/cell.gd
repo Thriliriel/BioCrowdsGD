@@ -1,5 +1,7 @@
 extends Node3D
 
+#id
+var id: int
 #is wall?
 var isWall: bool
 #markers

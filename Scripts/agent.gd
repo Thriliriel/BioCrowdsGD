@@ -1,4 +1,5 @@
 extends Node3D
+const PathPlanning = preload("res://Scripts/pathPlanning.gd")
 
 #id
 var agentId: int
@@ -27,8 +28,13 @@ var cell: Node3D
 # to check if agent is stuck
 var lastDist = []
 
+#using path planning?
+var usePathPlanning: bool
+var pathPlanning: PathPlanning
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	usePathPlanning = true
 	cell = null
 	goal = null
 	speed = Vector3.ZERO
@@ -39,6 +45,10 @@ func _ready():
 	goalPosition = Vector3.ZERO
 	radius = 1
 	maxSpeed = 1.2
+	if usePathPlanning:
+		pathPlanning = PathPlanning.new() #10000 = max iterations allowed to find a path
+		pathPlanning._ready()
+		path = []
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -55,6 +65,8 @@ func ClearAgent():
 	speed = Vector3.ZERO
 	markers = []
 	speedModule = 0
+	if usePathPlanning:
+		CheckSubGoalDistance()
 	
 #calculate W
 func CalculateWeight(indiceRelacao):
@@ -216,6 +228,11 @@ func CheckSubGoalDistance():
 			goalPosition = Vector3(path[0].position.x, path[0].position.y, path[0].position.z)
 		elif distanceSubGoal < radius:
 			goalPosition = goal.position
+			
+func FindPath():
+	path = pathPlanning.FindPath(cell, goal.cell)
+	var pt = path[0]
+	goalPosition = Vector3(pt.position.x, pt.position.y, pt.position.z)
 			
 func GetCell():
 	return cell

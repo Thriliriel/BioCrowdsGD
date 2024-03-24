@@ -14,9 +14,13 @@ var mapSize = Vector3(30, 30, 0)
 var agents = []
 #all cells (should make it faster, since it does not need to find them each frame)
 var cells = []
+#use path planning?
+var pathPlanning: bool
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	pathPlanning = true
+	
 	#get the information from the config file
 	var result = Filehandler.LoadFile("Config.json")
 	result = result["simulation"]
@@ -48,6 +52,7 @@ func _ready():
 	
 	var posX = 0
 	var posY = 0
+	var idCell = 1
 	for i in range(0, mapSize.x):
 		posY = 0
 		for j in range(0, mapSize.y):
@@ -57,9 +62,11 @@ func _ready():
 			#print(str(newCell.position.x) + "--" + str(newCell.position.y))
 			#set the obstacle holder
 			newCell.obsHolder = obsHolder
+			newCell.id = idCell
 			cells.append(newCell)
 			#add to the scene
 			cellsHolder.add_child(newCell)
+			idCell += 1
 			
 			#if we do not have the cellSize yet, get it
 			if cellSize == Vector3.ZERO:
@@ -105,6 +112,7 @@ func _ready():
 			agent.position = chosenCell.position
 			agent.goal = $Goals.get_children()[goalList[0]] #ONLY ONE GOAL SO FAR!!
 			agent.goalPosition = agent.goal.position
+			agent.usePathPlanning = pathPlanning
 			agents.append(agent)	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -125,6 +133,11 @@ func _process(delta):
 		
 	$Camera.position += velocity * delta
 	#end camera movement
+	
+	#for each agent, calculate the path, if true
+	if pathPlanning:
+		for i in range(0, len(agents)):
+			agents[i].FindPath()
 	
 	#if no agent left, done
 	if len(agents) > 0:
